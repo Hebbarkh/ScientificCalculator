@@ -4,16 +4,19 @@ A terminal based calculator implemented in python that takes natural language qu
 
 ## Prerequisites
 python 2.7
+
 PLY - python lex and yacc
 
 ## Installing
 
 pip install ply
+
 RUN `calc1.py` file
 
 ## Description
 
 The program is to implement a scientific calculator that accept input as natural language queries and evaluates the expression.
+
 The Scientific expression may include any of the following functions
 - Basic arithmatic operations
 - Logarithmic Operations
