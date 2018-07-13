@@ -81,13 +81,16 @@ def p_factor(p):
 		| FLOAT'''
 	p[0]=p[1]
 
+def p_paran(p):
+	'''expression : OPAR expression CPAR'''
+	p[0]=p[2]
+
 def p_logical_not(p):
 	'''expression : NOT expression'''
 	p[0] = ~p[2]
 	
 def p_factorial_exp(p):
-	'''expression : FACTORIAL OPAR expression CPAR
-	| expression FACTORIAL
+	'''expression : expression FACTORIAL
 	| FACTORIAL expression
 	'''
 	try:
@@ -102,21 +105,22 @@ def p_factorial_exp(p):
 	except ValueError as e:print e,'\n'
 	
 def p_logarithms(p):
-	'''expression : LOG OPAR expression CPAR
-	| LN OPAR expression CPAR
-	| LOG expression
+	'''expression : LOG expression
 	| LN expression
 	'''
-	if p[1]=='log':
-		try:
-			p[0] = math.log10(p[3])
-		except IndexError:
-			p[0] = math.log10(p[2])
-	elif p[1] == 'ln':
-		try:
-			p[0] = math.log(p[3])
-		except IndexError:
-			p[0] = math.log(p[2])	
+	try:
+		if p[1]=='log':
+			try:
+				p[0] = math.log10(p[3])
+			except IndexError:
+				p[0] = math.log10(p[2])
+		elif p[1] == 'ln':
+			try:
+				p[0] = math.log(p[3])
+			except IndexError:
+				p[0] = math.log(p[2])
+	except ValueError:
+		print "Math domain error\n"
 			
 def p_pival(p):
 	'''expression : PI
@@ -144,31 +148,14 @@ def p_square_root(p):
 	p[0] = math.sqrt(p[2])
 		
 def p_math_fun(p):
-	'''expression : function
-	| function1'''
+	'''expression : function1'''
 	p[0] = p[1]
 	
-def p_trig_func(p):
-	'''function : SIN OPAR expression CPAR
-	| COS OPAR expression CPAR
-	| TAN OPAR expression CPAR
-	| COT OPAR expression CPAR
-	| SEC OPAR expression CPAR
-	| COSEC OPAR expression CPAR
-	
-	'''
-	if p[1] == 'sin':
-		p[0] = math.sin(p[3])
-	elif p[1] == 'cos':
-		p[0] = math.cos(p[3])
-	elif p[1] == 'tan':
-		p[0] = math.tan(p[3])
-	elif p[1] == 'cot':
-		p[0] = 1.0/math.tan(p[3])
-	elif p[1] == 'sec':
-		p[0] = 1.0/math.cos(p[3])
-	elif p[1] == 'cosec':
-		p[0] =1.0/math.sin(p[3])
+def p_math_pow(p):
+	'''expression : POWER OPAR expression expression CPAR'''
+	a1 = p[3]
+	a2 = p[4]
+	p[0] = a1**a2
 		
 def p_trig_func1(p):
 	'''function1 : SIN expression
@@ -177,6 +164,12 @@ def p_trig_func1(p):
 	| COT expression
 	| SEC expression
 	| COSEC expression
+	| COS expression RAD
+	| TAN expression RAD
+	| COT expression RAD
+	| SEC expression RAD
+	| COSEC expression RAD
+	| SIN expression RAD
 	'''
 	if p[1] == 'sin':
 		p[0] = math.sin(p[2])
@@ -191,27 +184,7 @@ def p_trig_func1(p):
 	elif p[1] == 'cosec':
 		p[0] = 1.0/math.sin(p[2])
 
-def p_trig_func2(p):
-	'''function : SIN OPAR expression CPAR DEGREE
-	| COS OPAR expression CPAR DEGREE
-	| TAN OPAR expression CPAR DEGREE
-	| COT OPAR expression CPAR DEGREE
-	| SEC OPAR expression CPAR DEGREE
-	| COSEC OPAR expression CPAR DEGREE
-	
-	'''
-	if p[1] == 'sin':
-		p[0] = math.sin(p[3]*math.pi/180)
-	elif p[1] == 'cos':
-		p[0] = math.cos(p[3]*math.pi/180)
-	elif p[1] == 'tan':
-		p[0] = math.tan(p[3]*math.pi/180)
-	elif p[1] == 'cot':
-		p[0] = 1.0/math.tan(p[3]*math.pi/180)
-	elif p[1] == 'sec':
-		p[0] = 1.0/math.cos(p[3]*math.pi/180)
-	elif p[1] == 'cosec':
-		p[0] =1.0/math.sin(p[3]*math.pi/180)
+
 		
 def p_func1(p):
 	'''function1 : SIN expression DEGREE
